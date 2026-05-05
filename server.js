@@ -19,7 +19,8 @@ connectDB();
 // Mount the Routes
 app.use('/api/students', require('./routes/studentRoutes'));
 app.use('/api/insights', require('./routes/insightRoutes'));
-
+app.use('/api/predictions', require('./routes/predictionRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 // Basic health check route
 app.get('/', (req, res) => {
   res.send('EdTech MVP API is running...');

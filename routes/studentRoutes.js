@@ -17,27 +17,41 @@ router.get('/', async (req, res) => {
 });
 
 // Route 2: Student Dashboard View (GET /:id/metrics)
+// Route 2: Student Dashboard View (GET /:id/metrics)
 // Purpose: Serve a single student's profile alongside their cumulative weekly time-series data.
 router.get('/:id/metrics', async (req, res) => {
   try {
     const studentId = req.params.id;
     
-    // First, fetch the single Student using the :id parameter
-    const studentProfile = await Student.findById(studentId);
+    // First, fetch the single Student (Bulletproofed for BOTH MongoDB _id and custom studentId)
+    let studentProfile;
+    try {
+      studentProfile = await Student.findById(studentId); // Tries MongoDB _id first
+    } catch (err) {
+      studentProfile = await Student.findOne({ studentId: studentId }); // Fallback to custom ID
+    }
     
     if (!studentProfile) {
       return res.status(404).json({ error: 'Student not found' });
     }
 
-    // Second, fetch all WeeklyMetric documents where the student field matches the :id
-    // Sort in ascending order by weekNumber
-    const weeklyRecords = await WeeklyMetric.find({ student: studentId }).sort({ weekNumber: 1 });
+    // Second, fetch all WeeklyMetric documents
+    const weeklyRecords = await WeeklyMetric.find({ student: studentProfile._id }).sort({ weekNumber: 1 });
+
+    // --- THE DYNAMIC RISK CORRECTOR ---
+    // Grab the score safely
+    const score = studentProfile.currentRiskScore || 75;
+
+    // Calculate the word dynamically based on the actual score
+    let calculatedRiskLevel = "High";
+    if (score >= 80) calculatedRiskLevel = "Low";
+    else if (score >= 60) calculatedRiskLevel = "Medium";
 
     // Respond with the strictly formatted contract
     res.status(200).json({
       studentProfile,
-      currentRiskLevel: studentProfile.currentRiskLevel,
-      currentRiskScore: studentProfile.currentRiskScore,
+      currentRiskLevel: calculatedRiskLevel, // Sending the corrected word!
+      currentRiskScore: score,
       weeklyRecords
     });
   } catch (error) {
@@ -52,8 +66,8 @@ router.post('/:id/metrics', async (req, res) => {
   try {
     const studentId = req.params.id;
     
-    // Find the Student by req.params.id. Return 404 if not found.
-    const student = await Student.findById(studentId);
+    // Find the Student by the custom studentId string. Return 404 if not found.
+    const student = await Student.findOne({ studentId: studentId });
     if (!student) {
       return res.status(404).json({ error: 'Student not found' });
     }
@@ -64,7 +78,7 @@ router.post('/:id/metrics', async (req, res) => {
 
     // Build the object manually so no malicious fields can sneak in
     const newMetricData = { 
-      student: studentId,
+      student: student._id,
       weekNumber,
       subjects,
       recentAssignment 
@@ -73,7 +87,7 @@ router.post('/:id/metrics', async (req, res) => {
     await newMetric.save();
 
     // Fetch ALL WeeklyMetric documents associated with this student (including the new one).
-    const allMetrics = await WeeklyMetric.find({ student: studentId });
+    const allMetrics = await WeeklyMetric.find({ student: student._id });
 
     // Pass the array of metrics into calculateRiskScore().
     const newRiskScore = calculateRiskScore(allMetrics);
