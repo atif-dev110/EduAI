@@ -1,4 +1,4 @@
-/*const express = require('express');
+const express = require('express');
 const router = express.Router();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const Student = require('../models/Student');
@@ -100,7 +100,7 @@ router.post('/:id/generate', async (req, res) => {
 });
 
 module.exports = router;
-*/
+
 
 
 
@@ -108,7 +108,7 @@ module.exports = router;
 
 
 // The hardcode method is back as a backup in case the AI generation breaks during the demo. Just swap the comments if needed!
-
+/*
 const express = require('express');
 const router = express.Router();
 // const { GoogleGenerativeAI } = require('@google/generative-ai'); // Commented out since we are bypassing
@@ -174,4 +174,4 @@ router.post('/:id/generate', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router;*/
