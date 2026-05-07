@@ -15,7 +15,9 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mongoose": "^9.6.1"
+    "mongoose": "^9.6.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.7"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.4.0"

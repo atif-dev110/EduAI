@@ -1,4 +1,4 @@
-/*const express = require('express');
+const express = require('express');
 const router = express.Router();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const Student = require('../models/Student');
@@ -75,7 +75,7 @@ router.post('/:id/generate', async (req, res) => {
     `;
 
     // STEP 5: Call Gemini
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
     const result = await model.generateContent(prompt);
     let aiResponseText = result.response.text();
 
@@ -100,10 +100,10 @@ router.post('/:id/generate', async (req, res) => {
 });
 
 module.exports = router;
-*/
 
 
 
+/*
 //HAAARRRRDDDCCOOODDDEEE BYPAAAASSSSSSSSEEEEEE FOR THE HACKATHON MVP DEMO!
 
 
@@ -175,3 +175,4 @@ router.post('/:id/generate', async (req, res) => {
 });
 
 module.exports = router;
+*/

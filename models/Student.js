@@ -11,6 +11,7 @@ const studentSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    email: { type: String, required: false },
     major: {
       type: String,
       default: 'Computer Science',

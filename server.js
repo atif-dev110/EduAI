@@ -28,7 +28,23 @@ app.get('/', (req, res) => {
 
 // The Port setting
 const PORT = process.env.PORT || 5000;
+//send email
+// require('./utils/emailCron');
 
+// --- HACKATHON DEMO OVERRIDE ROUTE ---
+app.patch('/api/force-risk/:id', async (req, res) => {
+  try {
+    const Student = require('./models/Student');
+    const updatedStudent = await Student.findByIdAndUpdate(
+      req.params.id, 
+      { currentRiskLevel: 'High', currentRiskScore: 88 },
+      { new: true }
+    );
+    res.status(200).json({ message: "Student forced to HIGH risk!", student: updatedStudent });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to override" });
+  }
+});
 // THE ENGINE STARTER
 app.listen(PORT, () => {
   console.log(`🚀 Server is officially running on port ${PORT}`);
