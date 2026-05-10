@@ -20,7 +20,9 @@ connectDB();
 app.use('/api/students', require('./routes/studentRoutes'));
 app.use('/api/insights', require('./routes/insightRoutes'));
 app.use('/api/predictions', require('./routes/predictionRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+
 // Basic health check route
 app.get('/', (req, res) => {
   res.send('EdTech MVP API is running...');
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
 // The Port setting
 const PORT = process.env.PORT || 5000;
 //send email
-// require('./utils/emailCron');
+//require('./utils/emailCron');
 
 // --- HACKATHON DEMO OVERRIDE ROUTE ---
 app.patch('/api/force-risk/:id', async (req, res) => {
